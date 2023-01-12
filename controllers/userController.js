@@ -94,6 +94,7 @@ exports.login = async (req, res, next) => {
 
     req.logIn(user, (err) => {
       if (err) {
+        console.log("Err :", err);
         return next(err);
       }
       return res.status(200).json({
