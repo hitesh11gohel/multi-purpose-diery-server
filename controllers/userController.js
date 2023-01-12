@@ -94,15 +94,14 @@ exports.login = async (req, res, next) => {
 
     req.logIn(user, (err) => {
       if (err) {
+        console.log("Err :", err);
         return next(err);
       }
-      return res
-        .status(200)
-        .json({
-          message: "Login successful",
-          user: user,
-          loggedInAt: new Date().toISOString(),
-        });
+      return res.status(200).json({
+        message: "Login successful",
+        user: user,
+        loggedInAt: new Date().toISOString(),
+      });
     });
   })(req, res, next);
 };
