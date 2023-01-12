@@ -7,9 +7,9 @@ const {
   deleteExpense,
   createExpense,
 } = require("../controllers/expenseController");
-// const Auth = require("../middlewares/auth"); // Middlewares
+const Auth = require("../middlewares/auth"); // Middlewares
 
-router.get("/get-all", getAllExpense);
+router.get("/get-all", Auth, getAllExpense);
 router.post("/add", createExpense);
 router.get("/get/:id", getExpenseById);
 router.patch("/update/:id", updateExpense);

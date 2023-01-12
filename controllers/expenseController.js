@@ -11,9 +11,8 @@ const { ExpenseModel } = require("../models");
 // }
 
 exports.getAllExpense = async (req, res) => {
-  console.log('user req :', req.user);
   try {
-    const data = await ExpenseModel.find({ userId: req.user._id });
+    const data = await ExpenseModel.find({ userId: req.user._id }).sort([['date', -1]]);
     const total = await ExpenseModel.count({ userId: req.user._id });
     res.json({
       response: "success",

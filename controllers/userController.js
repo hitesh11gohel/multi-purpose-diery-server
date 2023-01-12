@@ -96,7 +96,13 @@ exports.login = async (req, res, next) => {
       if (err) {
         return next(err);
       }
-      return res.status(200).json({ message: "Login successful", user: user });
+      return res
+        .status(200)
+        .json({
+          message: "Login successful",
+          user: user,
+          loggedInAt: new Date().toISOString(),
+        });
     });
   })(req, res, next);
 };
@@ -106,6 +112,9 @@ exports.logout = (req, res, next) => {
     if (err) {
       return next(err);
     }
-    return res.json({ message: "Logout successful" });
+    return res.json({
+      message: "Logout successful",
+      loggedOutAt: new Date().toISOString(),
+    });
   });
 };
