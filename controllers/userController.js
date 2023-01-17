@@ -99,7 +99,7 @@ exports.login = async (req, res, next) => {
       }
       return res.status(200).json({
         message: "Login successful",
-        user: user,
+        user: { id: user, email: req.body.email },
         loggedInAt: new Date().toISOString(),
       });
     });
