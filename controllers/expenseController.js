@@ -10,9 +10,14 @@ const { ExpenseModel } = require("../models");
 //   users[req.body._id] = req.body;
 // }
 
+// to Update all field name's type
+// await ExpenseModel.updateMany({}, [ { $set: { userId: { $toObjectId: "63cf9d8315687dc4209a0e76" } } } ]);
+
 exports.getAllExpense = async (req, res) => {
   try {
-    const data = await ExpenseModel.find({ userId: req.user._id }).sort([['date', -1]]);
+    const data = await ExpenseModel.find({ userId: req.user._id }).sort([
+      ["date", -1],
+    ]);
     const total = await ExpenseModel.count({ userId: req.user._id });
     res.json({
       response: "success",
