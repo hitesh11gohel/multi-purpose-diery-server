@@ -40,12 +40,17 @@ exports.getExpenseById = async (req, res) => {
 };
 
 exports.createExpense = async (req, res) => {
+  const url = req.protocol + "://" + req.get("host");
   const { title, address, date, budget } = req.body;
   if (!title || !address || !date || !budget) {
     return res.status(404).json({ error: "required fields not provided" });
   }
   try {
-    const data = new ExpenseModel({ ...req.body, userId: req.user._id });
+    const data = new ExpenseModel({
+      ...req.body,
+      userId: req.user._id,
+      image: url + "/upload/" + req.file.filename,
+    });
     const response = await data.save();
     res.status(201).json({
       response: "Success",
