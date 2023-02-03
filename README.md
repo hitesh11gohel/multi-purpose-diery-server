@@ -1,1 +1,1 @@
-# multi-purpose-diary-server
+# multi-purpose-diery-server
