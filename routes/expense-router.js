@@ -37,9 +37,9 @@ let upload = multer({
 });
 
 router.get("/get-all", Auth, getAllExpense);
-router.post("/add", upload.single("image"), createExpense);
-router.get("/get/:id", getExpenseById);
-router.patch("/update/:id", updateExpense);
-router.delete("/delete/:id", deleteExpense);
+router.post("/add", Auth, upload.single("image"), createExpense);
+router.get("/get/:id", Auth, getExpenseById);
+router.patch("/update/:id", Auth, updateExpense);
+router.delete("/delete/:id", Auth, deleteExpense);
 
 module.exports = router;

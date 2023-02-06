@@ -5,13 +5,7 @@ var path = require("path");
 var cookieParser = require("cookie-parser");
 var logger = require("morgan");
 var cors = require("cors");
-const mongoose = require("mongoose");
 require("./utils/mongo-connection");
-
-// newly added
-const session = require("express-session");
-const passport = require("passport");
-const MongoDbStore = require("connect-mongo")(session);
 
 var indexRouter = require("./routes/index");
 
@@ -22,36 +16,22 @@ app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "jade");
 
 app.use(cors());
+app.all("/*", function (req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept, x-access-token"
+  );
+  res.header("Access-Control-Allow-Credentials", true);
+  res.header("Access-Control-Allow-Methods", "POST, GET, PUT, DELETE, OPTIONS");
+  next();
+});
 app.use(logger("dev"));
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 app.use("/upload", express.static("upload"));
-
-// Session store
-let mongoStore = new MongoDbStore({
-  mongooseConnection: mongoose.connection,
-  collection: "sessions",
-});
-
-// Session config
-app.use(
-  session({
-    secret: process.env.COOKIE_SECRET,
-    resave: false,
-    store: mongoStore,
-    saveUninitialized: false,
-    cookie: { maxAge: 1000 * 60 * 60, httpOnly: false }, // 30 min
-    // cookie: { maxAge: 1000 * 60 * 60 * 24 }, // 24 hour
-  })
-);
-
-// Passport config
-const passportInit = require("./config/passport");
-passportInit(passport);
-app.use(passport.initialize());
-app.use(passport.session());
 
 app.use("/api", indexRouter);
 

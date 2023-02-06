@@ -1,6 +1,6 @@
-const passport = require("passport");
 const { UserModel } = require("../models");
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 
 exports.create = async (req, res) => {
   const { name, username, email, mobile, password } = req.body;
@@ -19,7 +19,6 @@ exports.create = async (req, res) => {
       res.status(201).json({
         response: "Success",
         message: "User registered successfully",
-        sessionData: req.session,
         data: response,
       });
     }
@@ -76,34 +75,36 @@ exports.deleteUser = async (req, res) => {
 };
 
 // login
-exports.login = async (req, res, next) => {
-  const { email, password } = req.body;
-  if (!email || !password) {
-    return res.status(404).json({ error: "required fields not provided" });
-  }
-
-  passport.authenticate("local", (err, user, info) => {
-    if (err) {
-      res.status(401).json({ message: info.message, error: err });
-      return next(err);
+exports.login = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    if (!(email && password)) {
+      return res.status(400).json({ message: "All input is required" });
     }
 
-    if (!user) {
-      res.status(404).json({ message: info.message, error: err });
-    }
-
-    req.logIn(user, (err) => {
-      if (err) {
-        console.log("Err :", err);
-        return next(err);
-      }
+    const user = await UserModel.findOne({ email });
+    if (user && (await bcrypt.compare(password, user.password))) {
+      const token = jwt.sign(
+        { _id: user._id, email },
+        process.env.COOKIE_SECRET,
+        { expiresIn: "1h" }
+      );
+      user.token = token;
       return res.status(200).json({
         message: "Login successful",
-        user: { id: user, email: req.body.email },
+        user: {
+          email: user.email,
+          token: user.token,
+          name: user.name,
+          username: user.username,
+        },
         loggedInAt: new Date().toISOString(),
       });
-    });
-  })(req, res, next);
+    }
+    return res.status(400).json({ message: "Invalid Credentials" });
+  } catch (err) {
+    res.status(500).json({ response: "failed", err: err });
+  }
 };
 
 exports.logout = (req, res, next) => {

@@ -19,9 +19,8 @@ exports.getAllExpense = async (req, res) => {
       ["date", -1],
     ]);
     const total = await ExpenseModel.count({ userId: req.user._id });
-    res.json({
+    res.status(200).json({
       response: "success",
-      // sessionData: req.session,
       total: total,
       data: data,
     });
@@ -46,10 +45,15 @@ exports.createExpense = async (req, res) => {
     return res.status(404).json({ error: "required fields not provided" });
   }
   try {
+    let imageData;
+    if (req.file) {
+      imageData = url + "/upload/" + req.file.filename;
+    }
+
     const data = new ExpenseModel({
       ...req.body,
       userId: req.user._id,
-      image: url + "/upload/" + req.file.filename,
+      image: imageData ? imageData : "",
     });
     const response = await data.save();
     res.status(201).json({
