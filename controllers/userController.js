@@ -97,6 +97,7 @@ exports.login = async (req, res) => {
           token: user.token,
           name: user.name,
           username: user.username,
+          mobile: user.mobile,
         },
         loggedInAt: new Date().toISOString(),
       });
