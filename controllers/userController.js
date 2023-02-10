@@ -4,17 +4,26 @@ const jwt = require("jsonwebtoken");
 
 exports.create = async (req, res) => {
   const { name, username, email, mobile, password } = req.body;
+  const url = req.protocol + "://" + req.get("host");
   if (!name || !username || !email || !mobile || !password) {
     return res.status(404).json({ error: "required fields not provided" });
   }
   try {
     const userExist = await UserModel.findOne({ email: email });
+    let imageData;
+    if (req.file) {
+      imageData = url + "/userProfiles/" + req.file.filename;
+    }
     if (userExist) {
       return res.status(422).json({ error: "email already exist" });
     } else {
       // Hash password
       const hashedPassword = await bcrypt.hash(password, 10);
-      const data = new UserModel({ ...req.body, password: hashedPassword });
+      const data = new UserModel({
+        ...req.body,
+        profile: imageData ? imageData : "",
+        password: hashedPassword,
+      });
       const response = await data.save();
       res.status(201).json({
         response: "Success",
@@ -48,9 +57,16 @@ exports.getById = async (req, res) => {
 
 exports.update = async (req, res) => {
   try {
-    const data = await UserModel.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-    });
+    let imageData;
+    const url = req.protocol + "://" + req.get("host");
+    if (req.file) {
+      imageData = url + "/userProfiles/" + req.file.filename;
+    }
+    const data = await UserModel.findByIdAndUpdate(
+      req.params.id,
+      { ...req.body, profile: imageData ? imageData : "" },
+      { new: true }
+    );
     res.status(200).json({
       response: "Success",
       message: "User updated successfully",
@@ -98,6 +114,11 @@ exports.login = async (req, res) => {
           name: user.name,
           username: user.username,
           mobile: user.mobile,
+          address: user.address,
+          state: user.state,
+          country: user.country,
+          profile: user.profile,
+          id: user._id,
         },
         loggedInAt: new Date().toISOString(),
       });

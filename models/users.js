@@ -7,7 +7,11 @@ let userSchema = new mongoose.Schema(
     email: { type: String, required: true },
     mobile: { type: Number, required: true },
     password: { type: String, required: true },
-    role: { type: String, default: 'user' },
+    address: { type: String },
+    state: { type: String },
+    country: { type: String },
+    profile: { type: String },
+    role: { type: String, default: "user" },
   },
   {
     timestamps: true,
