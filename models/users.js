@@ -8,9 +8,9 @@ let userSchema = new mongoose.Schema(
     mobile: { type: Number, required: true },
     password: { type: String, required: true },
     address: { type: String },
-    state: { type: String },
-    country: { type: String },
-    profile: { type: String },
+    state: { type: String, default: "" },
+    country: { type: String, default: "" },
+    profile: { type: String, default: "" },
     role: { type: String, default: "user" },
   },
   {
