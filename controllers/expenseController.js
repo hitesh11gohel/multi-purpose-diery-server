@@ -12,6 +12,19 @@ const { ExpenseModel } = require("../models");
 
 // to Update all field name's type
 // await ExpenseModel.updateMany({}, [ { $set: { userId: { $toObjectId: "63cf9d8315687dc4209a0e76" } } } ]);
+// await ExpenseModel.updateMany({ userId: "63edc45424c82aa9fac4d4cf" }, [ { $set: { userId: { $toObjectId: "63edc45424c82aa9fac4d4cf" } } } ]);
+
+// to deleted all documents
+// const deletedData = await ExpenseModel.deleteMany( { userId : "63b800d7625455e857633afa" } );
+
+// to insert new entries
+// const insertedData = await ExpenseModel.insertMany(dummyUserData);
+
+// to find and update all documents
+// const isUpdated = await ExpenseModel.updateMany(
+//   { userId: "63b800d7625455e857633afa" },
+//   { $set: { userId: { $toObjectId: "63b800d7625455e857633afa" } } }
+// );
 
 exports.getAllExpense = async (req, res) => {
   try {

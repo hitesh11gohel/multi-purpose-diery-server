@@ -103,7 +103,7 @@ exports.login = async (req, res) => {
       const token = jwt.sign(
         { _id: user._id, email },
         process.env.COOKIE_SECRET,
-        { expiresIn: "1h" }
+        { expiresIn: "7d" }
       );
       user.token = token;
       return res.status(200).json({
